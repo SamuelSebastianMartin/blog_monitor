@@ -1,6 +1,10 @@
 #! /usr/bin/env python3
 """
-This is prototype for a program that will 'read' students' reflective
+To download student journals into a csv file.
+As Firefox downloads only to Desktop, the `ls_desktop()` and `mv_csv()`
+functions are necessary to have the data in the current directory.
+
+This module is part of a program that will 'read' students' reflective
 journal blogs and investigate them for any words that might be signs
 of distress, or unhappiness.
 """
@@ -8,14 +12,33 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys  # For typing the login.
 from selenium.webdriver.firefox.options import Options  # To block pop-ups.
 from selenium.webdriver.support.select import Select  # For dropdown menu.
+import os
+import shutil
 
 url = 'https://ble.soas.ac.uk/mod/hsuforum/route.php?contextid=4648522&action=export'  # Export blog
 
 
-def save_blog_to_desktop():
+def save_blog_to_desktop():  # main()
+    desktop = ls_desktop()
     driver = get_browser()
     find_data(driver, url)
     driver.close()
+    mv_csv(desktop)
+
+
+def ls_desktop():
+    desktop = os.listdir('/home/sam/Desktop/')
+    return desktop
+
+
+def mv_csv(desktop):
+    new_desktop = os.listdir('/home/sam/Desktop/')
+    dif_desktop = [item for item in new_desktop if item not in desktop]
+    if len(dif_desktop) != 1:
+        raise Exception('Unique new download not found')
+    else:
+        export = '/home/sam/Desktop/' + dif_desktop[0]
+        shutil.move(export, os.getcwd())
 
 
 def find_data(driver, url):
