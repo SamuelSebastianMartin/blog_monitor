@@ -36,9 +36,12 @@ def mv_csv(desktop):
     dif_desktop = [item for item in new_desktop if item not in desktop]
     if len(dif_desktop) != 1:
         raise Exception('Unique new download not found')
+    elif 'downloads' not in os.listdir():
+        raise Exception('downloads directory not found. Downloaded file remains on Desktop.')
     else:
-        export = '/home/sam/Desktop/' + dif_desktop[0]
-        shutil.move(export, os.getcwd())
+        journal_export = '/home/sam/Desktop/' + dif_desktop[0]
+        downloads_path = os.getcwd() + '/downloads'
+        shutil.move(journal_export, downloads_path)
 
 
 def find_data(driver, url):
