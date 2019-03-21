@@ -26,7 +26,16 @@ def analyse_posts(message):
     Returns 'alert' for posts with concerning content;
     Returns 'non-alert' for non-concerning posts.
     """
-    return 'alert'
+    message = message.lower() #  remove punctuation.
+    for wordlist in (watchwords.absolutist, watchwords.death_words,
+                    watchwords.negative_emot):
+        for word in wordlist:
+#            import pdb; pdb.set_trace()
+            if word in message:
+                return 'alert'
+            else:
+                continue
+    return 'non-alert'
 
 
 def alert_process(df_row):
