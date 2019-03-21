@@ -17,29 +17,35 @@ def select_posts():
 
 def store_results(df):
     """Saves relvant data into MySQL database"""
-    cnx = mysql.connector.connect(**mysql_config)
-    pass
+    cnx = mysql.connector.connect(**credentials.mysql_config)
+    cnx.close()
 
 
 def analyse_posts(message):
+    """Examines the content of the journal post.
+    Returns 'alert' for posts with concerning content;
+    Returns 'non-alert' for non-concerning posts.
+    """
     return 'alert'
 
 
-def alert_process(db_row):
+def alert_process(df_row):
+    """Raises an alert when a journal post has concerning content."""
     print('Alert Process')
+    print(df_row)
 
 def main():
-    db = select_posts()
-    for n in range(len(db)):
-        message = db['Message'][n]
+    df = select_posts()
+    for n in range(len(df)):
+        message = df['Message'][n]
         if analyse_posts(message) == 'non-alert':
             continue
         elif analyse_posts(message) != 'alert':
             raise Exception('Confused alert message: {}: {}'
-                    .format(db['Author'][n], db['Date'][n]))
+                    .format(df['Author'][n], df['Date'][n]))
         else:
-            alert_process(db.iloc[n])
-
+            alert_process(df.iloc[n])
+    store_results(df)
 
 if __name__ == '__main__':
     main()
