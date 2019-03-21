@@ -21,8 +21,24 @@ def store_results(df):
     pass
 
 
+def analyse_posts(message):
+    return 'alert'
+
+
+def alert_process(db_row):
+    print('Alert Process')
+
 def main():
-    select_posts()
+    db = select_posts()
+    for n in range(len(db)):
+        message = db['Message'][n]
+        if analyse_posts(message) == 'non-alert':
+            continue
+        elif analyse_posts(message) != 'alert':
+            raise Exception('Confused alert message: {}: {}'
+                    .format(db['Author'][n], db['Date'][n]))
+        else:
+            alert_process(db.iloc[n])
 
 
 if __name__ == '__main__':
